@@ -1,4 +1,5 @@
 quickslipper
 ============
 
-Quicksilver style string scoring.
+Quicksilver style string scoring based on
+https://github.com/joshaven/string_score
