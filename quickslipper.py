@@ -28,7 +28,7 @@ def first_valid_index(a, b):
         return min_index
     return max(a, b)
 
-def score(s, abbreviation):
+def score(string, abbreviation):
     """
     Doctests:
     # Exact match
@@ -46,9 +46,47 @@ def score(s, abbreviation):
     >>> assert score("Hello world", "hello") < score("Hello world", "Hello")
 
     # Closer matches should have higher scores
-    #  score("Hello world", "H") < score("Hello world", "He")
-    # True
+    >>> score("Hello world", "H") < score("Hello world", "He")
+    True
 
+    # Should match first matchable character regardless of case
+    >>> score("Hillsdale Michigan", "himi") > 0
+    True
+
+    # Advanced scoring methods
+    # Consecutive letter bonus
+    >>> score("Hello World", "Hel") > score("Hello World", "Hld")
+    True
+
+    # Acronym bonus
+    >>> score("Hello World", "HW") > score("Hello World", "ho")
+    True
+    >>> score("yet another Hello World", "yaHW") > score("Hello World", "yet another")
+    True
+    >>> score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "Hil")
+    True
+    >>> score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "illsda")
+    True
+    >>> score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "hills")
+    True
+
+    # Beginning of string bonus
+    >>> score("Hillsdale", "hi") > score("Chippewa", "hi")
+    True
+
+    # Proper string weights
+    >>> score("Research Resources North", "res") > score("Mary Conces", "res")
+    True
+    >>> score("Research Resources North", "res") > score("Bonnie Strathern - Southwest Michigan Title Search", "res")
+    True
+
+    # Start of string bonus
+    >>> score("Mary Large", "mar") > score("Large Mary", "mar")
+    True
+    >>> score("Silly Mary Large", "mar") == score("Silly Large Mary", "mar")
+    True
+
+    # Examples
     >>> assert score("hello world", "ax1") == 0
     >>> assert score("hello world", "ow") > 0.14
     >>> assert score("hello world", "h") >= 0.09
@@ -57,8 +95,8 @@ def score(s, abbreviation):
     >>> assert score("hello world", "hell") >= 0.36
     >>> assert score("hello world", "hello") >= 0.45
 
-    # assert score("hello world", "helloworld") >= 0.9
-    # assert score("hello world", "hello worl") >= 0.9
+    >>> assert score("hello world", "helloworld") >= 0.9
+    >>> assert score("hello world", "hello worl") >= 0.9
     >>> assert score("hello world", "hello world") == 1
 
     >>> assert score("Hello", "h") >= 0.13
@@ -69,13 +107,12 @@ def score(s, abbreviation):
     >>> assert score("Hello", "H") >= 0.2
 
     # Acronyms are given more weight.
-    # assert score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "Hills")
-    # assert score("Hillsdale Michigan", "Hillsd") > score("Hillsdale Michigan", "HiMi")
+    >>> assert score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "Hills")
+    >>> assert score("Hillsdale Michigan", "Hillsd") > score("Hillsdale Michigan", "HiMi")
     """
-    if s == abbreviation:
+    if string == abbreviation:
         return 1.0
 
-    string = s
     total_character_score = 0
     start_of_string_bonus = False
     abbreviation_length = len(abbreviation)
@@ -118,7 +155,7 @@ def score(s, abbreviation):
         total_character_score += character_score
 
     # Uncomment to weigh smaller words higher.
-    # return total_character_score / string_length;
+    # return total_character_score / string_length
 
     abbreviation_score = total_character_score / abbreviation_length
     percentage_of_matched_string = abbreviation_length / string_length
