@@ -23,15 +23,32 @@
 # THE SOFTWARE.
 
 def first_valid_index(a, b):
-    minimum = min(a, b)
-    if minimum > -1:
-        return minimum
+    min_index = min(a, b)
+    if min_index > -1:
+        return min_index
     return max(a, b)
 
-def score(s, abbr):
+def score(s, abbreviation):
     """
-
     Doctests:
+    # Exact match
+    >>> assert score("Hello world", "Hello world") == 1.0
+
+    # Not matching
+    >>> assert score("Hello world", "hellx") == 0   # non-existent character in match should return 0
+    >>> assert score("Hello world", "hello_world") == 0  # non-existent character in match should return 0
+
+    # Match must be sequential
+    >>> assert score("Hello world", "WH") == 0
+    >>> assert score("Hello world", "HW") > 0
+
+    # Same case should match better than wrong case
+    >>> assert score("Hello world", "hello") < score("Hello world", "Hello")
+
+    # Closer matches should have higher scores
+    #  score("Hello world", "H") < score("Hello world", "He")
+    # True
+
     >>> assert score("hello world", "ax1") == 0
     >>> assert score("hello world", "ow") > 0.14
     >>> assert score("hello world", "h") >= 0.09
@@ -54,61 +71,59 @@ def score(s, abbr):
     # Acronyms are given more weight.
     # assert score("Hillsdale Michigan", "HiMi") > score("Hillsdale Michigan", "Hills")
     # assert score("Hillsdale Michigan", "Hillsd") > score("Hillsdale Michigan", "HiMi")
-
     """
-    string = s
-    if string == abbr:
+    if s == abbreviation:
         return 1.0
 
-    scores = []
-    abbr_length = len(abbr)
-    string_length = len(string)
+    string = s
+    total_character_score = 0
     start_of_string_bonus = False
+    abbreviation_length = len(abbreviation)
+    string_length = len(string)
 
-    # walk through abbreviation
-    for i, c in enumerate(abbr):
-
+    # Walk through the abbreviation and add up scores.
+    for i, c in enumerate(abbreviation):
         # Find the first case-insensitive match of a character.
         c_lower = c.lower()
         c_upper = c.upper()
         index_in_string = first_valid_index(string.find(c_lower), string.find(c_upper))
 
-        # Bail out of c is not found in string.
+        # Bail out if the character is not found in string.
         if index_in_string == -1:
             return 0
 
-        scores.append(0.1) # Set base score for matching 'c'.
-
-        # Beginning of string bonus.
+        # Set base score for matching 'c'.
+        character_score = 0.1
 
         # Case bonus
         if string[index_in_string] == c:
-            scores[-1] += 0.1
+            character_score += 0.1
 
         # Consecutive letter and start of string bonus.
-        if index_in_string == 0:
-            scores[-1] += 0.8         # increase the score when matching first char of the remainder of the string.
+        if not index_in_string: # 0 == index_in_string
+            # increase the score when matching first char of the remainder of the string.
+            character_score += 0.8
             # If the match is the first letter of the string and first letter of abbr.
-            if i == 0:
+            if not i: # 0 == i
                 start_of_string_bonus = True
 
         # Acronym bonus
-        # Weighting logic: Typing the first letter of an acronym is at most as
-        # if you preceeded it by two perfect letter matches.
         if string[index_in_string - 1] == ' ':
-            scores[-1] += 0.8 #* Math.min(index_in_string, 5); # cap bonus at 0.4 * 5
+            character_score += 0.8 # * Math.min(index_in_string, 5); # cap bonus at 0.4 * 5
 
-        # Left trim the already matched part of the string (forces sequential
-        # matches)
-        string = string[index_in_string + 1:-1]
+        # Only remaining substring will be searched in the next iteration.
+        string = string[index_in_string+1:]
 
-    summation = sum(scores)
-    # return summation/string_length  # Uncomment to weight small words higher.
-    abbr_score = summation/len(scores)
-    percentage_of_matched_string = abbr_length/string_length
-    word_score = abbr_score * percentage_of_matched_string
-    my_score = (word_score + abbr_score)/2 # softens the penalty for longer strings.
+        # Add up score.
+        total_character_score += character_score
+
+    # Uncomment to weigh smaller words higher.
+    # return total_character_score / string_length;
+
+    abbreviation_score = total_character_score / abbreviation_length
+    percentage_of_matched_string = abbreviation_length / string_length
+    word_score = abbreviation_score * percentage_of_matched_string
+    my_score = (word_score + abbreviation_score)/2 # softens the penalty for longer strings.
     if start_of_string_bonus and (my_score + 0.1 < 1):
         my_score += 0.1
-
     return my_score
