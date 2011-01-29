@@ -35,14 +35,14 @@ def read_file(filename):
     """
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
-setup(name='quickslipper',
+setup(name='stringslipper',
       version='0.1.1',
       description='Quicksilver-like pattern matching',
       long_description=read_file('README'),
       author="Gora Khargosh",
       author_email="gora.khargosh@gmail.com",
       license="MIT License",
-      url="http://github.com/gorakhargosh/quickslipper",
+      url="http://github.com/gorakhargosh/stringslipper",
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
@@ -53,5 +53,5 @@ setup(name='quickslipper',
           'Topic :: Software Development :: Libraries',
           'Topic :: Utilities',
           ],
-      py_modules=['quickslipper'],
+      py_modules=['stringslipper'],
       )
