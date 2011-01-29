@@ -36,7 +36,7 @@ def read_file(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
 setup(name='stringslipper',
-      version='0.1.1',
+      version='0.1.2',
       description='Quicksilver-like pattern matching',
       long_description=read_file('README'),
       author="Gora Khargosh",
