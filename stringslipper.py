@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# quickslipper.py: Quicksilver-like string scoring.
+# stringslipper.py: Quicksilver-like string scoring.
 # Copyright (C) 2010 Gora Khargosh <gora.khargosh@gmail.com>
 # Copyright (C) 2009 Joshaven Potter <yourtech@gmail.com>
 #
