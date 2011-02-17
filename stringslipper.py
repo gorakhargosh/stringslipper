@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # stringslipper.py: Quicksilver-like string scoring.
-# Copyright (C) 2010 Yesudeep Mangalapilly <gora.khargosh@gmail.com>
+# Copyright (C) 2010 Yesudeep Mangalapilly <yesudeep@gmail.com>
 # Copyright (C) 2009 Joshaven Potter <yourtech@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
